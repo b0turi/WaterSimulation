@@ -10,6 +10,8 @@ namespace WaterSimulation
     {
         static void Main(string[] args)
         {
+            Window w = new Window(1920, 1080);
+            w.Run();
         }
     }
 }
