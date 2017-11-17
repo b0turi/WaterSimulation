@@ -50,8 +50,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EngineCore.cs" />
+    <Compile Include="Entity.cs" />
+    <Compile Include="FrameBuffer.cs" />
+    <Compile Include="Material.cs" />
+    <Compile Include="Mesh.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RenderedEntity.cs" />
+    <Compile Include="Shader.cs" />
+    <Compile Include="Camera.cs" />
+    <Compile Include="ShaderPrograms\DefaultShader.cs" />
+    <Compile Include="Light.cs" />
+    <Compile Include="Texture.cs" />
     <Compile Include="Window.cs" />
   </ItemGroup>
   <ItemGroup>
