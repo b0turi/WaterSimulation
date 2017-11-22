@@ -50,8 +50,8 @@ namespace WaterSimulation
             List<int> indices = new List<int>();
 
             //After parsing the data, re-sort the info so that all vertices have their data aligned
-            List<Vector2> newTextures = new List<Vector2>();
-            List<Vector3> newNormals = new List<Vector3>();
+            Vector2[] newTextures = new Vector2[1];
+            Vector3[] newNormals = new Vector3[1];
 
             //Read in the .obj file
             lines = File.ReadAllLines("Assets/Models/" + path);
@@ -67,20 +67,37 @@ namespace WaterSimulation
                     normals.Add(new Vector3(float.Parse(currentLine[1]), float.Parse(currentLine[2]), float.Parse(currentLine[3])));
                 else if (line.StartsWith("f "))
                 {
+                    if(newTextures.Length == 1)
+                    {
+                        newTextures = new Vector2[vertices.Count];
+                        newNormals = new Vector3[vertices.Count];
+                    }
+
                     string[] vertex1 = currentLine[1].Split('/');
                     string[] vertex2 = currentLine[2].Split('/');
                     string[] vertex3 = currentLine[3].Split('/');
 
-                    indices.Add(int.Parse(vertex1[0]) - 1);
-                    indices.Add(int.Parse(vertex2[0]) - 1);
-                    indices.Add(int.Parse(vertex3[0]) - 1);
+                    processVertex(vertex1, indices, textures, normals, newTextures, newNormals);
+                    processVertex(vertex2, indices, textures, normals, newTextures, newNormals);
+                    processVertex(vertex3, indices, textures, normals, newTextures, newNormals);
                 }
             }
 
-            meshes.Add(name, new Mesh(vertices, textures, normals, indices));
+
+
+            meshes.Add(name, new Mesh(vertices, newTextures.ToList(), newNormals.ToList(), indices));
             return name;
         }
 
+        private static void processVertex(string[] vertexData, List<int> indices, List<Vector2> textures, List<Vector3> normals, Vector2[] newTextures, Vector3[] newNormals)
+        {
+            int currentVertexPointer = int.Parse(vertexData[0]) - 1;
+            indices.Add(currentVertexPointer);
+            Vector2 currentTex = textures[int.Parse(vertexData[1]) - 1];
+            newTextures[currentVertexPointer] = currentTex;
+            Vector3 currentNorm = normals[int.Parse(vertexData[2]) - 1];
+            newNormals[currentVertexPointer] = currentNorm;
+        }
         public static string AddImage(string path, string name)
         {
             CheckFilepath("Assets/Images/" + path);
@@ -100,6 +117,11 @@ namespace WaterSimulation
 
             images.Add(name, new Texture(id, bmp.Width, bmp.Height));
             return name;
+        }
+
+        public static void AddTexture(Texture tex, string name)
+        {
+            images.Add(name, tex);
         }
 
         public static string AddShader(Shader shader, string name)

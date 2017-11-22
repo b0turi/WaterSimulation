@@ -15,7 +15,7 @@ namespace WaterSimulation
         private string material = null;
         private string shader = null;
 
-        public RenderedEntity(Vector3 position, Vector3 rotation = default(Vector3), Vector3 scale = default(Vector3), string mesh = null, string shader = null, string texture = null, string material = null) : base(position, rotation, scale)
+        public RenderedEntity(Vector3 position, Vector3 rotation = default(Vector3), Vector3 scale = default(Vector3), string mesh = null, string shader = null, string texture = "default", string material = null) : base(position, rotation, scale)
         {
             this.texture = texture;
             this.mesh = mesh;

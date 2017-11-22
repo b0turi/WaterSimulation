@@ -62,6 +62,8 @@
     <Compile Include="Camera.cs" />
     <Compile Include="ShaderPrograms\DefaultShader.cs" />
     <Compile Include="Light.cs" />
+    <Compile Include="ShaderPrograms\GUIShader.cs" />
+    <Compile Include="ShaderPrograms\WaterShader.cs" />
     <Compile Include="Texture.cs" />
     <Compile Include="Window.cs" />
   </ItemGroup>

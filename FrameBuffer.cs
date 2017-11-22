@@ -16,7 +16,7 @@ namespace WaterSimulation
         int depthBuffer = 0;
         Vector2 imgScale;
 
-        public FrameBuffer(Vector2 imgScale)
+        public FrameBuffer(Vector2 imgScale, string name)
         {
             this.imgScale = imgScale;
 
@@ -32,12 +32,12 @@ namespace WaterSimulation
             GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, textureAttachment, 0);
 
 
-            depthTextureAttachment = GL.GenTexture();
+            /*depthTextureAttachment = GL.GenTexture();
             GL.BindTexture(TextureTarget.Texture2D, depthTextureAttachment);
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.DepthComponent32, (int)imgScale.X, (int)imgScale.Y, 0, PixelFormat.DepthComponent, PixelType.Float, (IntPtr)null);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-            GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, depthTextureAttachment, 0);
+            GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, depthTextureAttachment, 0);*/
 
             GL.GenRenderbuffers(1, out depthBuffer);
             GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, depthBuffer);
@@ -45,6 +45,9 @@ namespace WaterSimulation
             GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, RenderbufferTarget.Renderbuffer, depthBuffer);
 
             UnBind();
+
+            Texture fbo = new Texture(textureAttachment, (int)imgScale.X, (int)imgScale.Y);
+            EngineCore.AddTexture(fbo, name);
         }
 
         public void Bind()
@@ -52,10 +55,13 @@ namespace WaterSimulation
             GL.BindTexture(TextureTarget.Texture2D, 0);
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, frameBuffer);
             GL.Viewport(0, 0, (int)imgScale.X, (int)imgScale.Y);
+
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         }
 
         public void UnBind()
         {
+            GL.BindTexture(TextureTarget.Texture2D, 0);
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
             GL.Viewport(0, 0, (int)EngineCore.Dimensions.X, (int)EngineCore.Dimensions.Y);
         }

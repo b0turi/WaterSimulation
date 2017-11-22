@@ -13,8 +13,10 @@ namespace WaterSimulation
     {
         Boolean = 0,
         Float = 1,
-        Vector3 = 2,
-        Matrix4 = 3
+        Vector2 = 2,
+        Vector3 = 3,
+        Vector4 = 4,
+        Matrix4 = 5
     }
 
     public abstract class Shader
@@ -135,6 +137,17 @@ namespace WaterSimulation
                 throw new ArgumentException("The given Uniform is not a Float, it is a " + Uniforms[name].type);
         }
 
+        public void LoadUniform(string name, Vector2 value)
+        {
+            if (Uniforms[name].type == UniformDataType.Vector2)
+            {
+                GL.Uniform2(Uniforms[name].location, value);
+                UniformsFilled[name] = true;
+            }
+            else
+                throw new ArgumentException("The given Uniform is not a Vector2, it is a " + Uniforms[name].type);
+        }
+
         public void LoadUniform(string name, Vector3 value)
         {
             if (Uniforms[name].type == UniformDataType.Vector3)
@@ -144,6 +157,17 @@ namespace WaterSimulation
             }
             else
                 throw new ArgumentException("The given Uniform is not a Vector3, it is a " + Uniforms[name].type);
+        }
+
+        public void LoadUniform(string name, Vector4 value)
+        {
+            if (Uniforms[name].type == UniformDataType.Vector4)
+            {
+                GL.Uniform4(Uniforms[name].location, value);
+                UniformsFilled[name] = true;
+            }
+            else
+                throw new ArgumentException("The given Uniform is not a Vector4, it is a " + Uniforms[name].type);
         }
 
         public void LoadUniform(string name, Matrix4 value)
