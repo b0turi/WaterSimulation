@@ -22,6 +22,8 @@ namespace WaterSimulation.ShaderPrograms
             AddUniform("model", GetUniform("model"), UniformDataType.Matrix4);
             AddUniform("view", GetUniform("view"), UniformDataType.Matrix4);
             AddUniform("projection", GetUniform("projection"), UniformDataType.Matrix4);
+            AddUniform("plane", GetUniform("plane"), UniformDataType.Vector4);
+
         }
 
         public override void Update()
@@ -29,6 +31,8 @@ namespace WaterSimulation.ShaderPrograms
             LoadUniform("model", currentObject.ModelMatrix());
             LoadUniform("view", EngineCore.gameCamera.ViewMatrix());
             LoadUniform("projection", EngineCore.gameCamera.ProjectionMatrix());
+            LoadUniform("plane", clippingPlane);
+
 
             for (int i = 0; i < lights.Count; i++)
             {

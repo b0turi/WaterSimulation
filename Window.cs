@@ -13,22 +13,22 @@ namespace WaterSimulation
 {
     public class Window : GameWindow
     {
-        FrameBuffer fb;
-        RenderedEntity dispBoy;
 
-        public Window(int wid, int hei) : base (wid, hei, GraphicsMode.Default, "WaterSimulation", GameWindowFlags.Fullscreen, DisplayDevice.Default)
+        public Window(int wid, int hei) : base (wid, hei, new GraphicsMode(32, 24,0,4), "WaterSimulation", GameWindowFlags.Fullscreen, DisplayDevice.Default)
         {
             EngineCore.Dimensions = new Vector2(Width, Height);
-            EngineCore.gameCamera = new Camera(EngineCore.Dimensions, new Vector3(0, 0, 15));
+            EngineCore.gameCamera = new Camera(EngineCore.Dimensions, new Vector3(0, 10, 30), new Vector3(15,0,0));
         }
 
         protected override void OnLoad(EventArgs e)
         {
             GL.Enable(EnableCap.DepthTest);
-            GL.Enable(EnableCap.ClipDistance0);
-            fb = new FrameBuffer(new Vector2(Size.Width, Size.Height), "whole scene");
-            EngineCore.images.Add("fb", new Texture(fb.textureAttachment, Size.Width, Size.Height));
-            dispBoy = new RenderedEntity(Vector3.Zero, Vector3.Zero, new Vector3(4,4,4), "Quad", "GUI", "fb");
+            GL.Enable(EnableCap.Texture2D);
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+            GL.Enable(EnableCap.PolygonSmooth);
+            GL.Enable(EnableCap.CullFace);
+            GL.CullFace(CullFaceMode.Back);
         }
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
@@ -46,17 +46,7 @@ namespace WaterSimulation
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.ClearColor(Color.Blue);
-            fb.Bind();
-            foreach (Entity obj in EngineCore.gameObjects.Values)
-            {
-                if (obj.GetType() == new RenderedEntity(new Vector3()).GetType())
-                {
-                    ((RenderedEntity)obj).Render();
-                }
-            }
-            fb.UnBind();
-
-            dispBoy.Render();
+            EngineCore.Render();
             GL.Flush();
             SwapBuffers();
         }

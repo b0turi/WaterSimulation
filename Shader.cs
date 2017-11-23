@@ -35,6 +35,9 @@ namespace WaterSimulation
 
         private Dictionary<string, bool> UniformsFilled { get; set; }
 
+        protected Vector4 clippingPlane;
+
+
         public Shader(string vertex, string fragment)
         {
             Attributes = new Dictionary<string, int>();
@@ -52,6 +55,11 @@ namespace WaterSimulation
             FillShader();
 
             BindAttributes();
+        }
+
+        public void SetClippingPlane(Vector4 plane)
+        {
+            clippingPlane = plane;
         }
 
         public void LoadShaderFromFile(String filename, ShaderType type)
@@ -146,6 +154,12 @@ namespace WaterSimulation
             }
             else
                 throw new ArgumentException("The given Uniform is not a Vector2, it is a " + Uniforms[name].type);
+        }
+
+        public void LoadUniform(string name, int value)
+        {
+                GL.Uniform1(Uniforms[name].location, value);
+                UniformsFilled[name] = true;
         }
 
         public void LoadUniform(string name, Vector3 value)

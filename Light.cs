@@ -16,6 +16,10 @@ namespace WaterSimulation
             this.color = color;
         }
 
+        public override void Render()
+        {
+        }
+
         public override void Update()
         {
 

@@ -129,6 +129,24 @@ namespace WaterSimulation
             shaders.Add(name, shader);
             return name;
         }
+        
+        public static void Render()
+        {
+            foreach (Entity obj in gameObjects.Values)
+            {
+                obj.rotation.Y += 0.25f;
+                obj.Render();
+            }
+        }
+
+        public static void RenderWithout(Entity excludedObj)
+        {
+            foreach (Entity obj in gameObjects.Values)
+            {
+                if(obj != excludedObj)
+                    obj.Render();
+            }
+        }
 
         /// <summary>
         /// Make sure that no attempts at file IO include invalid file names

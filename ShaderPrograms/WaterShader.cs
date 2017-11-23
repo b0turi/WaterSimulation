@@ -4,14 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OpenTK;
+using OpenTK.Graphics.OpenGL;
 
 namespace WaterSimulation.ShaderPrograms
 {
-    class WaterShader : Shader
+    public class WaterShader : Shader
     {
         public List<Light> lights = new List<Light>();
 
-        public WaterShader(string vertex, string fragment) : base(vertex, fragment) { }
+
+        public WaterShader(string vertex, string fragment, Vector4 clippingPlane = default(Vector4)) : base(vertex, fragment) { }
 
         public override void FillShader()
         {
@@ -22,13 +24,23 @@ namespace WaterSimulation.ShaderPrograms
             AddUniform("model", GetUniform("model"), UniformDataType.Matrix4);
             AddUniform("view", GetUniform("view"), UniformDataType.Matrix4);
             AddUniform("projection", GetUniform("projection"), UniformDataType.Matrix4);
+
+            AddUniform("reflection", GetUniform("reflection"), UniformDataType.Float);
+            AddUniform("refraction", GetUniform("refraction"), UniformDataType.Float);
+            AddUniform("dudv", GetUniform("dudv"), UniformDataType.Float);
         }
 
         public override void Update()
         {
+            GL.Enable(EnableCap.ClipDistance0);
+
             LoadUniform("model", currentObject.ModelMatrix());
             LoadUniform("view", EngineCore.gameCamera.ViewMatrix());
             LoadUniform("projection", EngineCore.gameCamera.ProjectionMatrix());
+
+            LoadUniform("reflection", 0);
+            LoadUniform("refraction", 1);
+            LoadUniform("dudv", 2);
 
             for (int i = 0; i < lights.Count; i++)
             {
@@ -41,6 +53,7 @@ namespace WaterSimulation.ShaderPrograms
                 LoadUniform("lightPos" + i, lights[i].position);
                 LoadUniform("lightColor" + i, new Vector3(lights[i].color.R / 255f, lights[i].color.G / 255f, lights[i].color.B / 255f));
             }
+
         }
     }
 }

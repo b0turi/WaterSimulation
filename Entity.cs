@@ -21,6 +21,7 @@ namespace WaterSimulation
         }
 
         public abstract void Update();
+        public abstract void Render();
 
         public Matrix4 ModelMatrix()
         {

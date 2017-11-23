@@ -26,14 +26,26 @@ namespace WaterSimulation
             String waterShader = EngineCore.AddShader(water, "Water");
 
             String cubeModel = EngineCore.AddModel("cubeything.obj", "cube");
+            String terrainModel = EngineCore.AddModel("terrain.obj", "terrain");
             String quad = EngineCore.AddModel("quad.obj", "Quad");
 
-            Light l = new Light(new Vector3(0, 0, 4), System.Drawing.Color.Bisque);
+            Light l = new Light(new Vector3(0, 10, 0), System.Drawing.Color.Green);
             ds.lights.Add(l);
+            water.lights.Add(l);
 
-            RenderedEntity cube = new RenderedEntity(new Vector3(0,0,0), Vector3.Zero, Vector3.One);
-            if (cube.AttachShader(waterShader) && cube.AttachMesh(cubeModel))
+            RenderedEntity cube = new RenderedEntity(new Vector3(0,0,0), new Vector3(0,0,0), new Vector3(10,10,10));
+            if (cube.AttachShader(defaultShader) && cube.AttachMesh(terrainModel))
                 EngineCore.AddObject("cube", cube);
+
+            RenderedEntity cubeyThing = new RenderedEntity(new Vector3(0, 2, 0), Vector3.Zero, Vector3.One, "cube", "Default");
+            EngineCore.AddObject("cubeything", cubeyThing);
+
+            EngineCore.AddImage("dudv.png", "DuDvMap");
+            Water waterObj = new Water(new Vector3(0,0.25f,0), System.Drawing.Color.Blue, new Vector2(1920, 1080), "DuDvMap", new Vector3(10, 10, 10));
+            EngineCore.AddObject("water", waterObj);
+            
+
+
             w.Run();
         }
     }

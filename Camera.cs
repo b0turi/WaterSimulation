@@ -30,10 +30,10 @@ namespace WaterSimulation
         /// <returns>The view matrix</returns>
         public Matrix4 ViewMatrix()
         {
-            Matrix4 View = Matrix4.CreateRotationX(rotation.X * (float)(Math.PI / 180));
+            Matrix4 View = Matrix4.CreateTranslation(new Vector3(-position.X, -position.Y, -position.Z));
+            View *= Matrix4.CreateRotationX(rotation.X * (float)(Math.PI / 180));
             View *= Matrix4.CreateRotationY(rotation.Y * (float)(Math.PI / 180));
             View *= Matrix4.CreateRotationZ(rotation.Z * (float)(Math.PI / 180));
-            View *= Matrix4.CreateTranslation(-position);
             return View;
         }
 
@@ -57,6 +57,10 @@ namespace WaterSimulation
             Projection.M43 = -((2 * zNear * zFar) / frustum);
             Projection.M44 = 0;
             return Projection;
+        }
+
+        public override void Render()
+        {
         }
     }
 }

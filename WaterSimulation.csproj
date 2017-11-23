@@ -65,6 +65,7 @@
     <Compile Include="ShaderPrograms\GUIShader.cs" />
     <Compile Include="ShaderPrograms\WaterShader.cs" />
     <Compile Include="Texture.cs" />
+    <Compile Include="Water.cs" />
     <Compile Include="Window.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -27,7 +27,7 @@ namespace WaterSimulation
         {
         }
 
-        public void Render()
+        public override void Render()
         {
             GL.UseProgram(GetShader().ProgramID);
             Draw();
