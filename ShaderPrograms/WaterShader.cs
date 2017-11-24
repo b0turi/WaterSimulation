@@ -12,7 +12,8 @@ namespace WaterSimulation.ShaderPrograms
     {
         public List<Light> lights = new List<Light>();
 
-
+        private float waveSpeed = 0.03f;
+        private float moveFactor = 0;
         public WaterShader(string vertex, string fragment, Vector4 clippingPlane = default(Vector4)) : base(vertex, fragment) { }
 
         public override void FillShader()
@@ -28,6 +29,15 @@ namespace WaterSimulation.ShaderPrograms
             AddUniform("reflection", GetUniform("reflection"), UniformDataType.Float);
             AddUniform("refraction", GetUniform("refraction"), UniformDataType.Float);
             AddUniform("dudv", GetUniform("dudv"), UniformDataType.Float);
+            AddUniform("normal", GetUniform("normalMap"), UniformDataType.Float);
+            AddUniform("depthMap", GetUniform("depthMap"), UniformDataType.Float);
+
+
+            AddUniform("lightColor", GetUniform("lightColor"), UniformDataType.Vector3);
+            AddUniform("lightPosition", GetUniform("lightPosition"), UniformDataType.Vector3);
+
+            AddUniform("moveFactor", GetUniform("moveFactor"), UniformDataType.Float);
+            AddUniform("cameraPos", GetUniform("cameraPos"), UniformDataType.Vector3);
         }
 
         public override void Update()
@@ -41,18 +51,20 @@ namespace WaterSimulation.ShaderPrograms
             LoadUniform("reflection", 0);
             LoadUniform("refraction", 1);
             LoadUniform("dudv", 2);
+            LoadUniform("normal", 3);
+            LoadUniform("depthMap", 4);
 
-            for (int i = 0; i < lights.Count; i++)
+            LoadUniform("cameraPos", EngineCore.gameCamera.position);
+            if(lights.Count > 0)
             {
-                if (!Uniforms.Keys.ToList().Contains("lightPos" + i))
-                {
-                    AddUniform("lightPos" + i, GetUniform("lightPos" + i), UniformDataType.Vector3);
-                    AddUniform("lightColor" + i, GetUniform("lightColor" + i), UniformDataType.Vector3);
-                }
-
-                LoadUniform("lightPos" + i, lights[i].position);
-                LoadUniform("lightColor" + i, new Vector3(lights[i].color.R / 255f, lights[i].color.G / 255f, lights[i].color.B / 255f));
+                LoadUniform("lightPosition", lights[0].position);
+                LoadUniform("lightColor", new Vector3(lights[0].color.R, lights[0].color.G, lights[0].color.B));
             }
+
+            moveFactor += waveSpeed / EngineCore.FPS;
+            moveFactor %= 1;
+
+            LoadUniform("moveFactor", moveFactor);
 
         }
     }

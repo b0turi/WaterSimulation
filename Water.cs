@@ -14,24 +14,22 @@ namespace WaterSimulation
     {
         private FrameBuffer reflection;
         private FrameBuffer refraction;
+        string normalMap;
         public Water(Vector3 position, Color color, Vector2 imgSize, string dudv, Vector3 scale = default(Vector3)) : base(position, new Vector3(-90,0,0), scale, "Quad", "Water", dudv, null)
         {
-            reflection = new FrameBuffer(imgSize, "reflection");
-            refraction = new FrameBuffer(imgSize, "refraction");
+            reflection = new FrameBuffer(imgSize, "reflection", false);
+            refraction = new FrameBuffer(imgSize, "refraction", true);
         }
 
         public override void Draw()
         {
-
-            //Render to the frame buffers
-
             GL.Enable(EnableCap.ClipDistance0);
 
             float dist = 2 * (EngineCore.gameCamera.position.Y - position.Y);
             EngineCore.gameCamera.position.Y -= dist;
             EngineCore.gameCamera.rotation.X *= -1;
 
-            EngineCore.shaders["Default"].SetClippingPlane(new Vector4(0, 1, 0, -position.Y));
+            EngineCore.shaders["Default"].SetClippingPlane(new Vector4(0, 1, 0, -position.Y+0.1f));
             reflection.Bind();
             EngineCore.RenderWithout(this);
             reflection.UnBind();
@@ -40,7 +38,7 @@ namespace WaterSimulation
             EngineCore.gameCamera.rotation.X *= -1;
 
 
-            EngineCore.shaders["Default"].SetClippingPlane(new Vector4(0, -1, 0, position.Y));
+            EngineCore.shaders["Default"].SetClippingPlane(new Vector4(0, -1, 0, position.Y+0.1f));
             refraction.Bind();
             EngineCore.RenderWithout(this);
             refraction.UnBind();
@@ -64,6 +62,11 @@ namespace WaterSimulation
             GL.ActiveTexture(TextureUnit.Texture2);
             GL.BindTexture(TextureTarget.Texture2D, GetTexture().texID); //DuDv Map
 
+            GL.ActiveTexture(TextureUnit.Texture3);
+            GL.BindTexture(TextureTarget.Texture2D, GetNormalMap().texID);
+
+            GL.ActiveTexture(TextureUnit.Texture4);
+            GL.BindTexture(TextureTarget.Texture2D, refraction.depthTextureAttachment);
 
             GL.DrawElements(PrimitiveType.Triangles, GetMesh().indices.Count, DrawElementsType.UnsignedInt, 0);
 
@@ -71,6 +74,16 @@ namespace WaterSimulation
             GL.BindVertexArray(0);
         }
 
+        public bool AttachNormalMap(string normal)
+        {
+            if (EngineCore.images.ContainsKey(normal))
+                normalMap = normal;
+            else
+                return false;
+            return true;
+        }
 
+        //Getters
+        public Texture GetNormalMap() { return EngineCore.images[normalMap]; }
     }
 }

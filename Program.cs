@@ -31,7 +31,9 @@ namespace WaterSimulation
 
             Light l = new Light(new Vector3(0, 10, 0), System.Drawing.Color.Green);
             ds.lights.Add(l);
-            water.lights.Add(l);
+
+            Light l2 = new Light(new Vector3(0, 10, 0), System.Drawing.Color.White);
+            water.lights.Add(l2);
 
             RenderedEntity cube = new RenderedEntity(new Vector3(0,0,0), new Vector3(0,0,0), new Vector3(10,10,10));
             if (cube.AttachShader(defaultShader) && cube.AttachMesh(terrainModel))
@@ -41,7 +43,9 @@ namespace WaterSimulation
             EngineCore.AddObject("cubeything", cubeyThing);
 
             EngineCore.AddImage("dudv.png", "DuDvMap");
+            EngineCore.AddImage("normal.png", "NormalMap");
             Water waterObj = new Water(new Vector3(0,0.25f,0), System.Drawing.Color.Blue, new Vector2(1920, 1080), "DuDvMap", new Vector3(10, 10, 10));
+            waterObj.AttachNormalMap("NormalMap");
             EngineCore.AddObject("water", waterObj);
             
 

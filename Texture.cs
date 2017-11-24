@@ -11,6 +11,7 @@ namespace WaterSimulation
         public int texID;
         public int width;
         public int height;
+        public List<byte> buffer;
 
         public Texture(int texID, int width, int height)
         {

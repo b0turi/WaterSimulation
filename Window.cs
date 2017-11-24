@@ -34,6 +34,18 @@ namespace WaterSimulation
         {
             if (Keyboard[Key.Escape])
                 Exit();
+            if (Keyboard[Key.W])
+                EngineCore.gameCamera.position.Y++;
+            if (Keyboard[Key.S])
+                EngineCore.gameCamera.position.Y--;
+            if (Keyboard[Key.A])
+                EngineCore.gameObjects["water"].position.Y -= 0.1f;
+            if (Keyboard[Key.D])
+                EngineCore.gameObjects["water"].position.Y += 0.1f;
+            if (Keyboard[Key.Q])
+                EngineCore.gameCamera.rotation.X++;
+            if (Keyboard[Key.E])
+                EngineCore.gameCamera.rotation.X--;
         }
 
         protected override void OnResize(EventArgs e)

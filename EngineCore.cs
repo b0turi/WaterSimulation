@@ -15,6 +15,9 @@ namespace WaterSimulation
     {
         public static Vector2 Dimensions;
         public static Camera gameCamera;
+        public static int FPS = 60;
+
+        public static int Skybox;
 
         public static Dictionary<String, FrameBuffer> frameBuffers = new Dictionary<string, FrameBuffer>();
         public static Dictionary<String, Entity> gameObjects = new Dictionary<string, Entity>();
@@ -67,7 +70,7 @@ namespace WaterSimulation
                     normals.Add(new Vector3(float.Parse(currentLine[1]), float.Parse(currentLine[2]), float.Parse(currentLine[3])));
                 else if (line.StartsWith("f "))
                 {
-                    if(newTextures.Length == 1)
+                    if (newTextures.Length == 1)
                     {
                         newTextures = new Vector2[vertices.Count];
                         newNormals = new Vector3[vertices.Count];
@@ -98,24 +101,57 @@ namespace WaterSimulation
             Vector3 currentNorm = normals[int.Parse(vertexData[2]) - 1];
             newNormals[currentVertexPointer] = currentNorm;
         }
-        public static string AddImage(string path, string name)
+
+        public static void AddSkybox(string[] textures, string name)
+        {
+            int id = GL.GenTexture();
+            GL.ActiveTexture(TextureUnit.Texture0);
+            GL.BindTexture(TextureTarget.TextureCubeMap, id);
+            for(int i = 0;i<6;i++)
+            {
+                AddImage(textures[i], name + "i", false, id);
+                Texture tex = images[name + "i"];
+                GL.TexImage2D(TextureTarget.TextureCubeMapPositiveX + i, 0, PixelInternalFormat.Rgba, tex.width, tex.height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Rgba, PixelType.UnsignedByte, tex.buffer);
+
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+            }
+            Skybox = id;
+        }
+
+        public static string AddImage(string path, string name, bool unique = true, int parentID = -1)
         {
             CheckFilepath("Assets/Images/" + path);
-
-            //Create a texture object in OpenGL and bind it to read in bitmap data
-            int id = GL.GenTexture();
-            GL.BindTexture(TextureTarget.Texture2D, id);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-
             //Read in bitmap data and process with alpha channels
             Bitmap bmp = new Bitmap("Assets/Images/" + path);
             BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bmpData.Width, bmpData.Height, 0,
-            OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, bmpData.Scan0);
-            bmp.UnlockBits(bmpData);
 
-            images.Add(name, new Texture(id, bmp.Width, bmp.Height));
+            Texture tex;
+
+            if (unique)
+            {
+                //Create a texture object in OpenGL and bind it to read in bitmap data
+                int id = GL.GenTexture();
+                GL.BindTexture(TextureTarget.Texture2D, id);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+
+                tex = new Texture(id, bmp.Width, bmp.Height);
+
+                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bmpData.Width, bmpData.Height, 0,
+                OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, bmpData.Scan0);
+                bmp.UnlockBits(bmpData);
+
+            }
+            else
+            {
+                tex = new Texture(parentID, bmp.Width, bmp.Height);
+            }
+
+            ImageConverter convert = new ImageConverter();
+            tex.buffer = ((byte[])convert.ConvertTo(bmp, typeof(byte[]))).ToList();
+
+            images.Add(name, tex);
             return name;
         }
 
@@ -134,7 +170,7 @@ namespace WaterSimulation
         {
             foreach (Entity obj in gameObjects.Values)
             {
-                obj.rotation.Y += 0.25f;
+                obj.rotation.Y += 0.03f;
                 obj.Render();
             }
         }

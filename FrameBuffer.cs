@@ -12,11 +12,11 @@ namespace WaterSimulation
     {
         int frameBuffer = 0;
         public int textureAttachment = 0;
-        int depthTextureAttachment = 0;
+        public int depthTextureAttachment = 0;
         int depthBuffer = 0;
         Vector2 imgScale;
 
-        public FrameBuffer(Vector2 imgScale, string name)
+        public FrameBuffer(Vector2 imgScale, string name, bool depthTexture)
         {
             this.imgScale = imgScale;
 
@@ -31,18 +31,23 @@ namespace WaterSimulation
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
             GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, textureAttachment, 0);
 
-
-            /*depthTextureAttachment = GL.GenTexture();
-            GL.BindTexture(TextureTarget.Texture2D, depthTextureAttachment);
-            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.DepthComponent32, (int)imgScale.X, (int)imgScale.Y, 0, PixelFormat.DepthComponent, PixelType.Float, (IntPtr)null);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-            GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, depthTextureAttachment, 0);*/
-
-            GL.GenRenderbuffers(1, out depthBuffer);
-            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, depthBuffer);
-            GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.DepthComponent, (int)imgScale.X, (int)imgScale.Y);
-            GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, RenderbufferTarget.Renderbuffer, depthBuffer);
+            if(depthTexture)
+            {
+                depthTextureAttachment = GL.GenTexture();
+                GL.BindTexture(TextureTarget.Texture2D, depthTextureAttachment);
+                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.DepthComponent, (int)imgScale.X, (int)imgScale.Y, 0, PixelFormat.DepthComponent, PixelType.Float, (IntPtr)null);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+                GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachmentExt, depthTextureAttachment, 0);
+            }
+            else
+            {
+                GL.GenRenderbuffers(1, out depthBuffer);
+                GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, depthBuffer);
+                GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.DepthComponent, (int)imgScale.X, (int)imgScale.Y);
+                GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, RenderbufferTarget.Renderbuffer, depthBuffer);
+            }
+            
 
             UnBind();
 
@@ -57,6 +62,7 @@ namespace WaterSimulation
             GL.Viewport(0, 0, (int)imgScale.X, (int)imgScale.Y);
 
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            GL.ClearDepth(1);
         }
 
         public void UnBind()
