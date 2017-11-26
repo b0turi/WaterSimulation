@@ -17,7 +17,7 @@ namespace WaterSimulation
         public static Camera gameCamera;
         public static int FPS = 60;
 
-        public static int Skybox;
+        public static Skybox skybox;
 
         public static Dictionary<String, FrameBuffer> frameBuffers = new Dictionary<string, FrameBuffer>();
         public static Dictionary<String, Entity> gameObjects = new Dictionary<string, Entity>();
@@ -102,21 +102,26 @@ namespace WaterSimulation
             newNormals[currentVertexPointer] = currentNorm;
         }
 
-        public static void AddSkybox(string[] textures, string name)
+        public static void AddSkybox(string[] textures, string name, int scale)
         {
             int id = GL.GenTexture();
-            GL.ActiveTexture(TextureUnit.Texture0);
             GL.BindTexture(TextureTarget.TextureCubeMap, id);
             for(int i = 0;i<6;i++)
             {
-                AddImage(textures[i], name + "i", false, id);
-                Texture tex = images[name + "i"];
-                GL.TexImage2D(TextureTarget.TextureCubeMapPositiveX + i, 0, PixelInternalFormat.Rgba, tex.width, tex.height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Rgba, PixelType.UnsignedByte, tex.buffer);
+                AddImage(textures[i], name + i, false, id);
+                Texture tex = images[name + i];
 
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+                GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+                GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+
+                GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
+                GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
+
+                GL.TexImage2D(TextureTarget.TextureCubeMapPositiveX + i, 0, PixelInternalFormat.Rgba, tex.data.Width, tex.data.Height,
+                    0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, tex.data.Scan0);
+
             }
-            Skybox = id;
+            skybox = new Skybox(scale, id);
         }
 
         public static string AddImage(string path, string name, bool unique = true, int parentID = -1)
@@ -140,7 +145,6 @@ namespace WaterSimulation
 
                 GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bmpData.Width, bmpData.Height, 0,
                 OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, bmpData.Scan0);
-                bmp.UnlockBits(bmpData);
 
             }
             else
@@ -148,8 +152,7 @@ namespace WaterSimulation
                 tex = new Texture(parentID, bmp.Width, bmp.Height);
             }
 
-            ImageConverter convert = new ImageConverter();
-            tex.buffer = ((byte[])convert.ConvertTo(bmp, typeof(byte[]))).ToList();
+            tex.data = bmpData;
 
             images.Add(name, tex);
             return name;
@@ -173,6 +176,7 @@ namespace WaterSimulation
                 obj.rotation.Y += 0.03f;
                 obj.Render();
             }
+            skybox.Render();
         }
 
         public static void RenderWithout(Entity excludedObj)
@@ -182,6 +186,7 @@ namespace WaterSimulation
                 if(obj != excludedObj)
                     obj.Render();
             }
+            skybox.Render();
         }
 
         /// <summary>

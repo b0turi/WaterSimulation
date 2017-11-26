@@ -63,7 +63,9 @@
     <Compile Include="ShaderPrograms\DefaultShader.cs" />
     <Compile Include="Light.cs" />
     <Compile Include="ShaderPrograms\GUIShader.cs" />
+    <Compile Include="ShaderPrograms\SkyboxShader.cs" />
     <Compile Include="ShaderPrograms\WaterShader.cs" />
+    <Compile Include="Skybox.cs" />
     <Compile Include="Texture.cs" />
     <Compile Include="Water.cs" />
     <Compile Include="Window.cs" />
