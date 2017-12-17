@@ -33,18 +33,28 @@ namespace WaterSimulation
             String quad = EngineCore.AddModel("quad.obj", "Quad");
             String cubeObj = EngineCore.AddModel("cube.obj", "Cube");
 
-            Light l = new Light(new Vector3(0, 10, 0), System.Drawing.Color.Green);
+            Light l = new Light(new Vector3(0, 3, 0), System.Drawing.Color.Tomato);
             ds.lights.Add(l);
 
             Light l2 = new Light(new Vector3(0, 10, 0), System.Drawing.Color.White);
             water.lights.Add(l2);
 
-            RenderedEntity cube = new RenderedEntity(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(10, 10, 10));
-            if (cube.AttachShader(defaultShader) && cube.AttachMesh(terrainModel))
+            RenderedEntity cube = new RenderedEntity(new Vector3(0, 0, 0), new Vector3(-90, 0, 0), new Vector3(10, 10, 10));
+            if (cube.AttachShader(defaultShader) && cube.AttachMesh(quad))
+            {
                 EngineCore.AddObject("cube", cube);
+            }
 
             RenderedEntity cubeyThing = new RenderedEntity(new Vector3(0, 2, 0), Vector3.Zero, Vector3.One, "cube", "Default");
             EngineCore.AddObject("cubeything", cubeyThing);
+
+
+
+            EngineCore.AddModel("tree.obj", "tree");
+
+            RenderedEntity tree = new RenderedEntity(new Vector3(8, 0, -9), Vector3.Zero, new Vector3(2,2,2), "tree", "Default");
+            tree.AttachTexture(EngineCore.AddImage("tree.png", "Tree"));
+            EngineCore.AddObject("Tree", tree);
 
             EngineCore.AddImage("dudv.png", "DuDvMap");
             EngineCore.AddImage("normal.png", "NormalMap");

@@ -172,10 +172,7 @@ namespace WaterSimulation
         public static void Render()
         {
             foreach (Entity obj in gameObjects.Values)
-            {
-                obj.rotation.Y += 0.03f;
                 obj.Render();
-            }
             skybox.Render();
         }
 

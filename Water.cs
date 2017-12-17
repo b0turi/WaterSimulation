@@ -28,6 +28,7 @@ namespace WaterSimulation
             float dist = 2 * (EngineCore.gameCamera.position.Y - position.Y);
             EngineCore.gameCamera.position.Y -= dist;
             EngineCore.gameCamera.rotation.X *= -1;
+            EngineCore.gameCamera.CalculateMatrices(false);
 
             EngineCore.shaders["Default"].SetClippingPlane(new Vector4(0, 1, 0, -position.Y+0.1f));
             reflection.Bind();
@@ -36,6 +37,7 @@ namespace WaterSimulation
 
             EngineCore.gameCamera.position.Y += dist;
             EngineCore.gameCamera.rotation.X *= -1;
+            EngineCore.gameCamera.CalculateMatrices(false);
 
 
             EngineCore.shaders["Default"].SetClippingPlane(new Vector4(0, -1, 0, position.Y+0.1f));

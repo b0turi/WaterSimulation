@@ -14,26 +14,52 @@ namespace WaterSimulation
         private int zFar = 5000;
         private Vector2 window = new Vector2();
 
+        public Vector3 forward;
+        public Vector3 right;
+
+        public Matrix4 View;
+        public Matrix4 Projection;
+
+        private int calcCount = 0;
 
         public Camera(Vector2 windowSize, Vector3 position, Vector3 rotation = default(Vector3), Vector3 scale = default(Vector3)) : base(position, rotation, scale)
         {
             this.window = windowSize;
+            CalculateMatrices(true);
         }
 
         public override void Update()
         {
+            CalculateMatrices(false);
+
+            Matrix4 transformationMatrix = Matrix4.CreateTranslation(position);
+            transformationMatrix *= Matrix4.CreateRotationY(rotation.Y * (float)(Math.PI / 180));
+            transformationMatrix *= Matrix4.CreateRotationX(rotation.X * (float)(Math.PI / 180));
+            forward = transformationMatrix.Column2.Xyz;
+            right = transformationMatrix.Column0.Xyz;
+
+            Console.WriteLine(calcCount);
+            calcCount = 0;
+        }
+
+        public void CalculateMatrices(bool setProj)
+        {
+            View = ViewMatrix();
+            if(setProj)
+                Projection = ProjectionMatrix();
         }
 
         /// <summary>
         /// Create a view matrix based off of the camera's current position and rotation
         /// </summary>
         /// <returns>The view matrix</returns>
-        public Matrix4 ViewMatrix()
+        private Matrix4 ViewMatrix()
         {
             Matrix4 View = Matrix4.CreateTranslation(new Vector3(-position.X, -position.Y, -position.Z));
-            View *= Matrix4.CreateRotationX(rotation.X * (float)(Math.PI / 180));
             View *= Matrix4.CreateRotationY(rotation.Y * (float)(Math.PI / 180));
+            View *= Matrix4.CreateRotationX(rotation.X * (float)(Math.PI / 180));
             View *= Matrix4.CreateRotationZ(rotation.Z * (float)(Math.PI / 180));
+            calcCount++;
             return View;
         }
 
@@ -41,7 +67,7 @@ namespace WaterSimulation
         /// Create a projection matrix based off of the provided values for the Field of View and Near/Far planes
         /// </summary>
         /// <returns>The projection matrix</returns>
-        public Matrix4 ProjectionMatrix()
+        private Matrix4 ProjectionMatrix()
         {
             Matrix4 Projection = new Matrix4();
 

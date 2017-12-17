@@ -29,8 +29,8 @@ namespace WaterSimulation.ShaderPrograms
         public override void Update()
         {
             LoadUniform("model", currentObject.ModelMatrix());
-            LoadUniform("view", EngineCore.gameCamera.ViewMatrix());
-            LoadUniform("projection", EngineCore.gameCamera.ProjectionMatrix());
+            LoadUniform("view", EngineCore.gameCamera.View);
+            LoadUniform("projection", EngineCore.gameCamera.Projection);
             LoadUniform("plane", clippingPlane);
 
 

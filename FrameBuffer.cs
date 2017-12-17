@@ -16,28 +16,38 @@ namespace WaterSimulation
         int depthBuffer = 0;
         Vector2 imgScale;
 
-        public FrameBuffer(Vector2 imgScale, string name, bool depthTexture)
+        public FrameBuffer(Vector2 imgScale, string name, bool depthTexture, bool texture = true)
         {
             this.imgScale = imgScale;
 
             GL.GenFramebuffers(1, out frameBuffer);
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, frameBuffer);
-            GL.DrawBuffer(DrawBufferMode.ColorAttachment0);
+            if (texture)
+            {
+                GL.DrawBuffer(DrawBufferMode.ColorAttachment0);
 
-            textureAttachment = GL.GenTexture();
-            GL.BindTexture(TextureTarget.Texture2D, textureAttachment);
-            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, (int)imgScale.X, (int)imgScale.Y, 0, PixelFormat.Rgb, PixelType.UnsignedByte, (IntPtr)null);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-            GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, textureAttachment, 0);
+                textureAttachment = GL.GenTexture();
+                GL.BindTexture(TextureTarget.Texture2D, textureAttachment);
+                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, (int)imgScale.X, (int)imgScale.Y, 0, PixelFormat.Rgb, PixelType.UnsignedByte, (IntPtr)null);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+                GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, textureAttachment, 0);
+            }
+            else
+            {
+                GL.DrawBuffer(DrawBufferMode.None);
+                GL.ReadBuffer(ReadBufferMode.None);
+            }
+
+            
 
             if(depthTexture)
             {
                 depthTextureAttachment = GL.GenTexture();
                 GL.BindTexture(TextureTarget.Texture2D, depthTextureAttachment);
                 GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.DepthComponent, (int)imgScale.X, (int)imgScale.Y, 0, PixelFormat.DepthComponent, PixelType.Float, (IntPtr)null);
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
                 GL.FramebufferTexture(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachmentExt, depthTextureAttachment, 0);
             }
             else

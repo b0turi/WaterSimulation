@@ -30,22 +30,25 @@ namespace WaterSimulation
             GL.Enable(EnableCap.CullFace);
             GL.CullFace(CullFaceMode.Back);
         }
+        Vector2 lastMousePosition = new Vector2(0,0);
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
+            EngineCore.gameCamera.Update();
             if (Keyboard[Key.Escape])
                 Exit();
+            EngineCore.gameCamera.rotation.Y += 0.2f * (Mouse.GetState().X - lastMousePosition.X);
+            EngineCore.gameCamera.rotation.X += 0.2f* (Mouse.GetState().Y - lastMousePosition.Y);
             if (Keyboard[Key.W])
-                EngineCore.gameCamera.position.Y++;
+                EngineCore.gameCamera.position -= EngineCore.gameCamera.forward * 0.5f;
             if (Keyboard[Key.S])
-                EngineCore.gameCamera.position.Y--;
-            if (Keyboard[Key.A])
-                EngineCore.gameObjects["water"].position.Y -= 0.1f;
+                EngineCore.gameCamera.position += EngineCore.gameCamera.forward * 0.5f;
             if (Keyboard[Key.D])
-                EngineCore.gameObjects["water"].position.Y += 0.1f;
-            if (Keyboard[Key.Q])
-                EngineCore.gameCamera.rotation.X++;
-            if (Keyboard[Key.E])
-                EngineCore.gameCamera.rotation.X--;
+                EngineCore.gameCamera.position += EngineCore.gameCamera.right * 0.5f;
+            if (Keyboard[Key.A])
+                EngineCore.gameCamera.position -= EngineCore.gameCamera.right * 0.5f;
+
+            EngineCore.gameCamera.CalculateMatrices(false);
+            lastMousePosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
         }
 
         protected override void OnResize(EventArgs e)

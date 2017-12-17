@@ -30,7 +30,6 @@ namespace WaterSimulation
             Model *= Matrix4.CreateRotationY(rotation.Y * (float)(Math.PI / 180));
             Model *= Matrix4.CreateRotationZ(rotation.Z * (float)(Math.PI / 180));
             Model *= Matrix4.CreateTranslation(position);
-
             return Model;
         }
     }

@@ -45,8 +45,8 @@ namespace WaterSimulation.ShaderPrograms
             GL.Enable(EnableCap.ClipDistance0);
 
             LoadUniform("model", currentObject.ModelMatrix());
-            LoadUniform("view", EngineCore.gameCamera.ViewMatrix());
-            LoadUniform("projection", EngineCore.gameCamera.ProjectionMatrix());
+            LoadUniform("view", EngineCore.gameCamera.View);
+            LoadUniform("projection", EngineCore.gameCamera.Projection);
 
             LoadUniform("reflection", 0);
             LoadUniform("refraction", 1);

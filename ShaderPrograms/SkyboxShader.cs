@@ -22,8 +22,8 @@ namespace WaterSimulation.ShaderPrograms
 
         public override void Update()
         {
-            LoadUniform("projection", EngineCore.gameCamera.ProjectionMatrix());
-            Matrix4 newView = EngineCore.gameCamera.ViewMatrix();
+            LoadUniform("projection", EngineCore.gameCamera.Projection);
+            Matrix4 newView = EngineCore.gameCamera.View;
             newView.M41 = 0;
             newView.M42 = 0;
             newView.M43 = 0;
