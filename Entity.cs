@@ -22,6 +22,7 @@ namespace WaterSimulation
 
         public abstract void Update();
         public abstract void Render();
+        public abstract void RenderWith(Shader shader);
 
         public Matrix4 ModelMatrix()
         {

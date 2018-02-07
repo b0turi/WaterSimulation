@@ -1,0 +1,171 @@
+<html>
+	<head>
+		<style type="text/css">
+			body{
+				font-family: Arial;
+				font-size: 11pt;
+				color: #030303;
+				margin:0px;
+			}
+			img.center{
+				display:block;
+				margin: 0 auto;
+			}
+			img.left{
+				padding:10px;
+				float:left;
+			}
+			p{
+				padding:0px 10px 0px 10px;
+			}
+			p.left{
+				float:left;
+			}
+			.padded{
+				padding-left:10px;
+			}
+		</style>
+	</head>
+	<body>
+		<div style="width: 800px; margin: auto;">
+			<div style="background-color: #cccccc; padding: 10px;">
+				<h1 style="margin:0px;">Reflective and Refractive Water Simulation Through Use of the Fresnel Equations</h1>
+				<h2>Kyle Thompson</h2>
+				<h3>Case School of Engineering<br/>Case Western Reserve University<br/>Cleveland, Ohio<br/> kdt33@case.edu</h3>
+				<div style="float:right; margin-top: -195px;">
+					<img src="Main Screenshot.png" width="242px"/>
+				</div>
+			</div>
+			<div style="background-color: #dddddd; float:left; width:30%; ">
+				<h2 class="padded">How it Works</h2>
+				<p>Augustin-Jean Fresnel, a French physicist and civil engineer, derived the Fresnel equations in the early 1800s. They are often used in physics to observe the behavior of electromagnetic waves as they pass through reflective and refractive surfaces with given refractive indices, as shown in the image below:</p>
+				<img src="fresnel.gif" class="center"/>
+				<p>The plane of incidence is relevant when performing calculations with electromagnetic waves, as the magnetic portion runs perpendicular to the light, however for this application's purposes, only the vector is necessary.</p>
+				<p>The Fresnel equations can be used to ultimately determine how much of the reflective component and how much of the refractive component are visible when viewing a reflective surface in computer graphics. This can be represented in a value between 0 and 1, which is calculated by taking the dot product of the view vector and the normal of the reflective surface.</p>
+				<h2 class="padded">Controlling the UI</h2>
+				<p>The user interface shown in the videos that allows the user to dynamically add trees and rocks to the scene can be navigated with the following controls, which are also outlined in the project's README:</p>
+				<ul style="padding:10px; padding-left:20px; padding-top:0px;">
+					<li><b>Move the mouse:</b> Adjust the X and Y rotation of the Camera</li>
+					<li><b>1:</b> Spawn a tree of random scale and Y rotation at (0,0,0)</li>
+					<li><b>2:</b> Spawn a rock of random scale and Y rotation at (0,0,0)</li>
+					<li><b>Up:</b> Raise the water level</li>
+					<li><b>Down:</b> Lower the water level</li>
+				</ul>
+				<h4 class="padded">With no object selected:</h4>
+				<ul style="padding:10px; padding-left:20px; padding-top:0px;">
+					<li><b>W:</b> Move the camera forward</li>
+					<li><b>S:</b> Move the camera backwards</li>
+					<li><b>A:</b> Move the camera to the left</li>
+					<li><b>D:</b> Move the camera to the right</li>
+				</ul>
+				<h4 class="padded">With an object selected:</h4>
+				<ul style="padding:10px; padding-left:20px; padding-top:0px;">
+					<li><b>W:</b> Move the object forward along the X and Z components of the camera's forward vector</li>
+					<li><b>S:</b> Move the object backwards along the X and Z components of the camera's forward vector</li>
+					<li><b>A:</b> Move the object backwards along the X and Z components of the camera's right vector</li>
+					<li><b>D:</b> Move the object forward along the X and Z components of the camera's right vector</li>
+					<li><b>Q:</b> Decrease the Y value of the object</li>
+					<li><b>E:</b> Increase the Y value of the object</li>
+					<li><b>Enter:</b> Finalize the position of the object and deselct it</li>
+				</ul>
+				<h2 class="padded">Tools & Resources</h2>
+				<p>This project was written in C# and GLSL using OpenTK v2.0.0, an open source wrapper for OpenGL and OpenAL.</p>
+				<p>The distortion map, normal map, and height map for the terrain were all taken from a video tutorial series on YouTube by ThinMatrix.</p>
+				<p>The tree, rock, and boat models were all modeled, unwrapped, and had textures painted for them using Blender and Adobe Photoshop, respectively.</p>
+			</div>
+			<div style="width:70%; background-color: #ededed; float:left;">
+				<h2 class="padded">The Water Rendering Process</h2>
+				
+
+				<div>
+					<div style="width:260px;">
+						<h3 style="padding-left:15px; margin:-50px; padding-bottom:0px; margin:0px;">Step One</h3>
+						<img style="margin-top: -30px;" src="Initial.png" width="240px" class="left"/>
+					</div>
+					<div style="float:left; width:300px; margin-top:-30px;">
+						<p>First, a quad is rendered across the full length of the area where the water is meant to be rendered. For this example, the quad is colored cyan, but only to show the positioning of the quad.</p>
+					</div>
+				</div>
+				<div>
+					<div style="width:260px;">
+						<h3 style="padding-left:15px; padding-top:0px; padding-bottom:0px; margin:0px;">Step Two</h3>
+						<img style="margin-top: -30px;" src="Refraction FBO.png" width="240px" class="left"/>
+					</div>
+					<div style="float:left; width:300px; margin-top:-30px;">
+						<p>Next, two separate FBOs are rendered to, the first of which using the camera's current view matrix. This FBO is passed to the water shader. Here it is mapped to the quad, with a white tint of 10% added so that it's obvious where the borders of the quad are, as otherwise the image would look entirely transparent.</p>
+					</div>
+				</div>
+				<div>
+					<div style="width:260px;">
+						<h3 style="padding-left:15px; padding-top:0px; padding-bottom:0px; margin:0px;">Step Three</h3>
+						<img style="margin-top: -30px;" src="Reflection FBO.png" width="240px" class="left"/>
+					</div>
+					<div style="float:left; width:300px; margin-top:-30px;">
+						<p>The reflection FBO is rendered to using a different view matrix, calculated by taking the difference between the Y position of the camera and the Y position of the water and setting the new view matrix's Y position to the water's Y position minus that distance, then negating the X rotation of the camera so the view matrix is looking up at the same angle the camera is looking down.</p>
+					</div>
+				</div>
+				<div>
+					<div style="width:260px;">
+						<h3 style="padding-left:15px; padding-top:0px; padding-bottom:0px; margin:0px;">Step Four</h3>
+						<img style="margin-top: -30px;" src="Distortion.png" width="240px" class="left"/>
+					</div>
+					<div style="float:left; width:300px; margin-top:-30px;">
+						<p>The quad is passed another texture to sample, a distortion map, which uses the red and green components of the image to detail amount in the x and y directions that the UV coordinates at that point should be offset. The distortion map is used to adjust both the reflective and refractive image that is displayed.</p>
+					</div>
+				</div>
+				<div>
+					<div style="width:260px;">
+						<h3 style="padding-left:15px; padding-top:0px; padding-bottom:0px; margin:0px;">Step Five</h3>
+						<img style="margin-top: -30px;" src="Reflection and Refraction.png" width="240px" class="left"/>
+					</div>
+					<div style="float:left; width:300px; margin-top:-30px;">
+						<p>Sampling the distortion map to determine the appropriate UV coordinates to use for sampling the reflection and refraction FBOs, the two FBOs are mixed according to the Fresnel Effect, which is approximated by using the dot product of the view vector and the water's surface normal to represent what percentage of the image should be the refractive portion.</p>
+					</div>
+				</div>
+				<div>
+					<div style="width:260px;">
+						<h3 style="padding-left:15px; padding-top:0px; padding-bottom:0px; margin:0px;">Step Six</h3>
+						<img style="margin-top: -30px;" src="Normal Map.png" width="240px" class="left"/>
+					</div>
+					<div style="float:left; width:300px; margin-top:-30px;">
+						<p>Next, a normal map is passed to the quad to create a more accurate representation of the water with the Fresnel Effect because comparing the view vector to (0,1,0) simply creates a gradient, which is unrealistic. The normal map also lines up with the distortion map to accentuate the shapes of waves created by the distortion map when performing lighting calculations.</p>
+					</div>
+				</div>
+				<div>
+					<div style="width:260px;">
+						<h3 style="padding-left:15px; padding-top:0px; padding-bottom:0px; margin:0px;">Step Seven</h3>
+						<img style="margin-top: -30px;" src="Tint and Specular.png" width="240px" class="left"/>
+					</div>
+					<div style="float:left; width:300px; margin-top:-30px;">
+						<p>The new normal map can be used to add specular lighting to the water's surface to add a more realistic appearance. In this example, a single white point light is placed at (0, 10, 0). Also, a blue tint is added to the water, again to make the water appear more realistic.</p>
+					</div>
+				</div>
+				<div>
+					<div style="width:260px;">
+						<h3 style="padding-left:15px; padding-top:0px; padding-bottom:0px; margin:0px;">Step Eight</h3>
+						<img style="margin-top: -30px;" src="Depth.png" width="240px" class="left"/>
+					</div>
+					<div style="float:left; width:300px; margin-top:-30px;">
+						<p>Using information about the depth of the given fragment and using a the depth component of the refraction FBO, it can be determined how deep the water is at any given point. This can be shown in the image on the left, which uses a gradient system to show the relative depth of the water at any given point.</p>
+					</div>
+				</div>
+				<div>
+					<div style="width:260px;">
+						<h3 style="padding-left:15px; padding-top:0px; padding-bottom:0px; margin:0px;">Step Nine</h3>
+						<img style="margin-top: -30px;" src="Smoothed Edges.png" width="240px" class="left"/>
+					</div>
+					<div style="float:left; width:300px; margin-top:-30px;">
+						<p>Finally, the depth of the water is used to determine the alpha channel of the final texture on the quad. Areas right on the coast become increasingly more transparent so that edges are more seamless.</p>
+					</div>
+				</div>
+				<p>&nbsp;</p>
+				<h2 class="padded">The Final Product</h2>
+				<p>Below you can see a couple of videos showing the project running. This project was able to run without any serious frame dropping or delay at 1920x1080 60fps, however it was necessary to scale down the resolution and the framerate to record video while also running the game, so as the simulation may appear very low resolution, bear in mind that when running without video capture software, the simulation is able to process much more quickly.</p>
+				<p>The first video showcases multiple aspects of the simulation, including the cube mapped skybox, the height map generated terrain, and of course, the water. In addition, objects can be dynamically added and placed within the scene:</p>
+				<iframe style="padding:10px;" width="540" height="304" src="https://www.youtube.com/embed/PmU4AREvS0s" frameborder="0" gesture="media"></iframe>
+				<p>The second video shows a scene with many trees already added, and attempts to find the breaking point at which the simulation begins to lose framerate. Again, with no other video capture software running, this would be no problem, although the video shows a bit less of a stable framerate:</p>
+				<iframe style="padding:10px;" width="540" height="304" src="https://www.youtube.com/embed/mEhGYYJH4HU" frameborder="0" gesture="media"></iframe>
+			</div>
+		</div>
+	</body>
+</html>

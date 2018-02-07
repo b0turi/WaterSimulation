@@ -15,10 +15,12 @@ namespace WaterSimulation
         public int depthTextureAttachment = 0;
         int depthBuffer = 0;
         Vector2 imgScale;
+        bool texture = true;
 
         public FrameBuffer(Vector2 imgScale, string name, bool depthTexture, bool texture = true)
         {
             this.imgScale = imgScale;
+            this.texture = texture;
 
             GL.GenFramebuffers(1, out frameBuffer);
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, frameBuffer);
@@ -71,13 +73,16 @@ namespace WaterSimulation
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, frameBuffer);
             GL.Viewport(0, 0, (int)imgScale.X, (int)imgScale.Y);
 
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            if (texture)
+                GL.Clear(ClearBufferMask.ColorBufferBit);
+            GL.Clear(ClearBufferMask.DepthBufferBit);
             GL.ClearDepth(1);
         }
 
         public void UnBind()
         {
-            GL.BindTexture(TextureTarget.Texture2D, 0);
+            if(texture)
+                GL.BindTexture(TextureTarget.Texture2D, 0);
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
             GL.Viewport(0, 0, (int)EngineCore.Dimensions.X, (int)EngineCore.Dimensions.Y);
         }

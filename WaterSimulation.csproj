@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Boat.cs" />
     <Compile Include="EngineCore.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="FrameBuffer.cs" />
@@ -63,9 +64,13 @@
     <Compile Include="ShaderPrograms\DefaultShader.cs" />
     <Compile Include="Light.cs" />
     <Compile Include="ShaderPrograms\GUIShader.cs" />
+    <Compile Include="ShaderPrograms\ShadowShader.cs" />
     <Compile Include="ShaderPrograms\SkyboxShader.cs" />
+    <Compile Include="ShaderPrograms\TerrainShader.cs" />
     <Compile Include="ShaderPrograms\WaterShader.cs" />
+    <Compile Include="ShadowMap.cs" />
     <Compile Include="Skybox.cs" />
+    <Compile Include="Terrain.cs" />
     <Compile Include="Texture.cs" />
     <Compile Include="Water.cs" />
     <Compile Include="Window.cs" />

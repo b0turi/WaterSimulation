@@ -26,6 +26,13 @@ namespace WaterSimulation
         public static Dictionary<String, Material> materials = new Dictionary<string, Material>();
         public static Dictionary<String, Shader> shaders = new Dictionary<string, Shader>();
 
+        public static Entity selected;
+
+        public static ShadowMap shadows;
+        public static void init()
+        {
+            shadows = new ShadowMap();
+        }
         public static string AddFrameBuffer(String name, FrameBuffer fb)
         {
             frameBuffers.Add(name, fb);
@@ -175,6 +182,7 @@ namespace WaterSimulation
                 obj.Render();
             skybox.Render();
         }
+
 
         public static void RenderWithout(Entity excludedObj)
         {

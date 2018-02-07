@@ -38,7 +38,6 @@ namespace WaterSimulation
             forward = transformationMatrix.Column2.Xyz;
             right = transformationMatrix.Column0.Xyz;
 
-            Console.WriteLine(calcCount);
             calcCount = 0;
         }
 
@@ -86,6 +85,10 @@ namespace WaterSimulation
         }
 
         public override void Render()
+        {
+        }
+
+        public override void RenderWith(Shader shader)
         {
         }
     }

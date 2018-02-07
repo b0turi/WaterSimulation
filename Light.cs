@@ -20,6 +20,10 @@ namespace WaterSimulation
         {
         }
 
+        public override void RenderWith(Shader shader)
+        {
+        }
+
         public override void Update()
         {
 

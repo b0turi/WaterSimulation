@@ -11,7 +11,7 @@ namespace WaterSimulation
     public class RenderedEntity : Entity
     {
         protected string texture = null;
-        private string mesh = null;
+        protected string mesh = null;
         private string material = null;
         private string shader = null;
 
@@ -30,6 +30,13 @@ namespace WaterSimulation
         public override void Render()
         {
             GL.UseProgram(GetShader().ProgramID);
+            Draw();
+            GL.UseProgram(0);
+        }
+
+        public override void RenderWith(Shader shader)
+        {
+            GL.UseProgram(shader.ProgramID);
             Draw();
             GL.UseProgram(0);
         }

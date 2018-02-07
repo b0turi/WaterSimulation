@@ -28,33 +28,42 @@ namespace WaterSimulation
             SkyboxShader skybox = new SkyboxShader("skybox.vert", "skybox.frag");
             String skyboxShader = EngineCore.AddShader(skybox, "Skybox");
 
+            ShadowShader shadow = new ShadowShader("shadow.vert", "shadow.frag");
+            String shadowShader = EngineCore.AddShader(shadow, "Shadow");
+
+            TerrainShader terrain = new TerrainShader("terrain.vert", "terrain.frag");
+            String terrainShader = EngineCore.AddShader(terrain, "Terrain");
+
+
             String cubeModel = EngineCore.AddModel("cubeything.obj", "cube");
             String terrainModel = EngineCore.AddModel("terrain.obj", "terrain");
             String quad = EngineCore.AddModel("quad.obj", "Quad");
             String cubeObj = EngineCore.AddModel("cube.obj", "Cube");
+            EngineCore.AddModel("tree.obj", "tree");
+            EngineCore.AddModel("rock.obj", "rock");
 
-            Light l = new Light(new Vector3(0, 3, 0), System.Drawing.Color.Tomato);
+
+
+
+
+            Light l = new Light(new Vector3(0, 3, 0), System.Drawing.Color.White);
             ds.lights.Add(l);
+            terrain.lights.Add(l);
 
             Light l2 = new Light(new Vector3(0, 10, 0), System.Drawing.Color.White);
             water.lights.Add(l2);
 
-            RenderedEntity cube = new RenderedEntity(new Vector3(0, 0, 0), new Vector3(-90, 0, 0), new Vector3(10, 10, 10));
-            if (cube.AttachShader(defaultShader) && cube.AttachMesh(quad))
-            {
-                EngineCore.AddObject("cube", cube);
-            }
+            EngineCore.AddImage("tree.png", "treeImg");
+            EngineCore.AddImage("rock.png", "rockImg");
 
-            RenderedEntity cubeyThing = new RenderedEntity(new Vector3(0, 2, 0), Vector3.Zero, Vector3.One, "cube", "Default");
-            EngineCore.AddObject("cubeything", cubeyThing);
+            String boatObj = EngineCore.AddModel("boat.obj", "Boat");
+            EngineCore.AddImage("boards.jpg", "Boards");
+            Boat boat = new Boat(new Vector3(2, 0.2f, 2), new Vector3(0, 34, 0), new Vector3(0.25f, 0.25f, 0.25f), "Boards");
+            EngineCore.AddObject("Boat", boat);
 
-
-
-            EngineCore.AddModel("tree.obj", "tree");
-
-            RenderedEntity tree = new RenderedEntity(new Vector3(8, 0, -9), Vector3.Zero, new Vector3(2,2,2), "tree", "Default");
-            tree.AttachTexture(EngineCore.AddImage("tree.png", "Tree"));
-            EngineCore.AddObject("Tree", tree);
+            String ground = EngineCore.AddImage("grass.jpg", "Ground");
+            Terrain terrainObj = new Terrain("New Terrain", "Ground", "heightMap.png");
+            EngineCore.AddObject("Terrain", terrainObj);
 
             EngineCore.AddImage("dudv.png", "DuDvMap");
             EngineCore.AddImage("normal.png", "NormalMap");
@@ -68,7 +77,6 @@ namespace WaterSimulation
                 "Skybox/yneg.png",
                 "Skybox/zpos.png",
                 "Skybox/zneg.png"}, "Skybox", 500);
-
 
             w.Run();
         }
