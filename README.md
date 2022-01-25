@@ -2,7 +2,7 @@
 A project made for EECS 466: Graduate Computer Graphics
 ![Distortion Map](/Presentation%20Materials/Main%20Screenshot.png)
 ## About
-As a main component of the graduate version of Computer Graphics at Case Western Reserve University, studens work on a semester long project of their own choosing. Students could choose any number of topics discussed in class to showcase in their project and show a greater understanding and independent research into those areas. I chose to focus on an applied case of environment mapping in relation to the simulation of water. Simulating water in a realistic way is a complex problem which I tackled using many approximations.
+As a main component of the graduate version of Computer Graphics at Case Western Reserve University, students work on a semester long project of their own choosing. Students could choose any number of topics discussed in class to showcase in their project and show a greater understanding and independent research into those areas. I chose to focus on an applied case of environment mapping in relation to the simulation of water. Simulating water in a realistic way is a complex problem which I tackled using many approximations.
 
 ![Distortion Map](/Presentation%20Materials/Distortion.png)
 
